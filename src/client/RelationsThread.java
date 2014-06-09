@@ -2,29 +2,28 @@ package client;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
  
 public class RelationsThread extends Thread{
 
 	static String Server_host;
 	static String Cache_host;
+	int User_id;
+
+	public RelationsThread(int i) {
+		User_id=i;
+		}
 
 	public void run() {
 		int[] intArray = null;
 		int new_friends = 0;
 		int friendships_procesadas=0;
-		int User_id = ClientGenerator.usuarios_procesados+1;
-		ClientGenerator.usuarios_procesados=ClientGenerator.usuarios_procesados+1;
 		Socket socket = null;
 		PrintWriter out = null;
 		BufferedReader in = null;
+		int Usuarios_totales=0;
 		
 		try {
 			socket = new Socket(Server_host, 55555);
@@ -37,39 +36,20 @@ public class RelationsThread extends Thread{
 			
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println("Server - " + fromServer);
-				sleep(1000);
+				sleep(100);
+				try {
+					Usuarios_totales=Integer.parseInt(fromServer);
+				}
+				catch (Exception e){
+					//e.printStackTrace();
+				}
 				if (fromServer.equals("exit"))
 					break;
 				if (fromServer.startsWith("Followers_set")){
 					break;
 				}
 				if (fromServer.startsWith("......")){
-			
-					new_friends = friendsByDistribution(ClientGenerator.distribucion);
-					intArray = new int[new_friends];
-					int[] arr = new int[ClientGenerator.usuarios];
-					
-					for (int i = 0; i < arr.length; i++) {
-				        arr[i] = i+1;
-				    }
-					shuffleArray(arr);
-					boolean esta = false;
-					int pos = 0;
-					for (int i = 0; i < new_friends; i++) {
-						if (arr[i]==User_id)
-						{
-							esta = true;
-							pos = i;
-						}
-						else
-							intArray[i] = arr[i];
-				    }
-					if (esta)
-						intArray[pos]=arr[new_friends+1];
-					
-					
-					fromUser ="insertfriendship," + User_id + "," + intArray[friendships_procesadas];
-					friendships_procesadas=friendships_procesadas+1;
+					fromUser ="countusers";
 					if (fromUser != null) {
 						System.out.println("Client - " + fromUser);
 						synchronized (socket){
@@ -91,7 +71,7 @@ public class RelationsThread extends Thread{
 					}
 					else
 					{
-						fromUser ="insertfollowersbycluster," + ClientGenerator.usuarios_procesados + "," + new_friends + "," + ClientGenerator.cluster;
+						fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
 						if (fromUser != null) {
 							System.out.println("Client - " + fromUser);
 							synchronized (socket){
@@ -99,7 +79,54 @@ public class RelationsThread extends Thread{
 							}
 						}
 					}
-					
+				}
+				if (Usuarios_totales != 0){
+					new_friends = friendsByDistribution(ClientGenerator.distribucion,Usuarios_totales);
+					if (new_friends == 0){
+						fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
+						if (fromUser != null) {
+							System.out.println("Client - " + fromUser);
+							synchronized (socket){
+								out.println(fromUser);
+							}
+						}
+					}
+					else{
+						intArray = new int[new_friends];
+						int[] arr = new int[Usuarios_totales];
+						
+						for (int i = 0; i < arr.length; i++) {
+					        arr[i] = i+1;
+					    }
+						
+						shuffleArray(arr);
+						boolean esta = false;
+						int pos = 0;
+						int fin = 0;
+						for (int i = 0; i < new_friends; i++) {
+							if (arr[i]==User_id)
+							{
+								esta = true;
+								pos = i;
+							}
+							else
+								intArray[i] = arr[i];
+							fin=i;
+					    }
+						if (esta)
+							intArray[pos]=arr[fin+1];
+						
+						
+						fromUser ="insertfriendship," + User_id + "," + intArray[friendships_procesadas];
+						friendships_procesadas=friendships_procesadas+1;
+						Usuarios_totales = 0;
+						if (fromUser != null) {
+							System.out.println("Client - " + fromUser);
+							synchronized (socket){
+								out.println(fromUser);
+							}
+						}
+					}
 				}
 			}
 		} catch (UnknownHostException e) {
@@ -122,10 +149,10 @@ public class RelationsThread extends Thread{
 		}
 	}
 	
-	private int friendsByDistribution(int distribucion) {
+	private int friendsByDistribution(int distribucion, int usuarios_totales) {
 		if (distribucion==1){
 			double rand = Math.random();
-			double d = rand * ClientGenerator.usuarios;
+			double d = rand * usuarios_totales;
 			int friends_num = (int)d;
 			return friends_num;
 		}

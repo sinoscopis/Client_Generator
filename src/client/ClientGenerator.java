@@ -1,8 +1,6 @@
 package client;
 
 import java.io.*;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
  
 public class ClientGenerator {
@@ -11,6 +9,8 @@ public class ClientGenerator {
 	static int distribucion;
 	static int cluster;
 	static int usuarios_procesados=0;
+	static int[] ClientsArray = null;
+	
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
@@ -29,18 +29,19 @@ public class ClientGenerator {
 			System.err.println("ClientGenerator.jar number_of_users Server_IP Distribucion");
 			System.exit(1);
 		}
-		
-		for(int i=1; i<=usuarios; i++){
+		ClientsArray = new int[usuarios];
+		for(int i=0; i<usuarios; i++){
 			GeneratorThread user = new GeneratorThread();
 			user.setName(Integer.toString(i));
 			new Thread(user).start();
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.MILLISECONDS.sleep(500);
 		}
-		for(int i=1; i<=usuarios; i++){
-			RelationsThread user = new RelationsThread();
+		ClientGenerator.usuarios_procesados=0;
+		for(int i=0; i<usuarios; i++){
+			RelationsThread user = new RelationsThread(ClientsArray[i]);
 			user.setName(Integer.toString(i));
 			new Thread(user).start();
-			TimeUnit.SECONDS.sleep(2);
+			TimeUnit.MILLISECONDS.sleep(200);
 		}
 	}
 }

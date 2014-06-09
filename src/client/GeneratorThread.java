@@ -9,12 +9,13 @@ public class GeneratorThread extends Thread{
 
 	static String Server_host;
 	static String Cache_host;
-	static int usuario=1;
 	
 	public void run() {
 		Socket socket = null;
 		PrintWriter out = null;
 		BufferedReader in = null;
+		int User_pos = ClientGenerator.usuarios_procesados;
+		ClientGenerator.usuarios_procesados=ClientGenerator.usuarios_procesados+1;
 		
 		try {
 			socket = new Socket(Server_host, 55555);
@@ -31,10 +32,13 @@ public class GeneratorThread extends Thread{
 				if (fromServer.equals("exit"))
 					break;
 				if (fromServer.startsWith("inserted,")){
+					String[] peticion = fromServer.split(",", 2);
+					int client_id = Integer.parseInt(peticion[1]);
+					ClientGenerator.ClientsArray[User_pos]=client_id;
 					break;
 				}
 				if (fromServer.startsWith("......")){
-					fromUser = "insertuser,"+randomIdentifier(15);
+					fromUser = "insertuser,"+randomIdentifier(15)+","+ClientGenerator.cluster;
 					if (fromUser != null) {
 						System.out.println("Client - " + fromUser);
 						synchronized (socket){
