@@ -21,12 +21,12 @@ public class ClientGenerator {
 		    	GeneratorThread.Server_host = args[2];
 		    	distribucion = Integer.parseInt(args[3]);
 		    } catch (Exception e) {
-		        System.err.println("ClientGenerator.jar number_of_users Server_IP Distribucion");
+		        System.err.println("ClientGenerator.jar number_of_users cluster Server_IP Distribucion");
 		        System.exit(1);
 		    }
 		}
 		else{
-			System.err.println("ClientGenerator.jar number_of_users Server_IP Distribucion");
+			System.err.println("ClientGenerator.jar number_of_users cluster Server_IP Distribucion");
 			System.exit(1);
 		}
 		ClientsArray = new int[usuarios];

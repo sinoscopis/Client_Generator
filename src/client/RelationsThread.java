@@ -71,25 +71,27 @@ public class RelationsThread extends Thread{
 					}
 					else
 					{
-						fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
+						break;
+						/*fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
 						if (fromUser != null) {
 							System.out.println("Client - " + fromUser);
 							synchronized (socket){
 								out.println(fromUser);
 							}
-						}
+						}*/
 					}
 				}
 				if (Usuarios_totales != 0){
 					new_friends = friendsByDistribution(ClientGenerator.distribucion,Usuarios_totales);
 					if (new_friends == 0){
-						fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
+						break;
+						/*fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
 						if (fromUser != null) {
 							System.out.println("Client - " + fromUser);
 							synchronized (socket){
 								out.println(fromUser);
 							}
-						}
+						}*/
 					}
 					else{
 						intArray = new int[new_friends];
