@@ -10,13 +10,14 @@ public class RelationsThread extends Thread{
 
 	static String Server_host;
 	static String Cache_host;
-	int User_id;
+	static int id_user;
 
 	public RelationsThread(int i) {
-		User_id=i;
+		id_user=i;
 		}
 
 	public void run() {
+		int User_id=id_user;
 		int[] intArray = null;
 		int new_friends = 0;
 		int friendships_procesadas=0;

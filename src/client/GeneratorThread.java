@@ -9,14 +9,22 @@ public class GeneratorThread extends Thread{
 
 	static String Server_host;
 	static String Cache_host;
+	static int Cache_pos;
+	static int User_pos;
+	
+	
+	public GeneratorThread(int i, int j) {
+		Cache_pos = i;
+		User_pos = j;
+		
+		}
 	
 	public void run() {
 		Socket socket = null;
 		PrintWriter out = null;
 		BufferedReader in = null;
-		int User_pos = ClientGenerator.usuarios_procesados;
-		ClientGenerator.usuarios_procesados=ClientGenerator.usuarios_procesados+1;
-		
+		int pos_cache= Cache_pos;
+		int pos_user= User_pos;
 		try {
 			socket = new Socket(Server_host, 55555);
  
@@ -28,17 +36,18 @@ public class GeneratorThread extends Thread{
 			
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println("Server - " + fromServer);
-				sleep(1000);
+				sleep(50);
 				if (fromServer.equals("exit"))
 					break;
 				if (fromServer.startsWith("inserted,")){
 					String[] peticion = fromServer.split(",", 2);
 					int client_id = Integer.parseInt(peticion[1]);
-					ClientGenerator.ClientsArray[User_pos]=client_id;
+					ClientGenerator.ClientsArray[pos_cache][pos_user]=client_id;
 					break;
 				}
 				if (fromServer.startsWith("......")){
-					fromUser = "insertuser,"+randomIdentifier(15)+","+ClientGenerator.cluster;
+					int cache = Cache_pos+1;
+					fromUser = "insertuser,"+randomIdentifier(15)+","+ cache;
 					if (fromUser != null) {
 						System.out.println("Client - " + fromUser);
 						synchronized (socket){
