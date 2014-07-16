@@ -10,10 +10,16 @@ public class RelationsThread extends Thread{
 
 	static String Server_host;
 	static String Cache_host;
-	static int id_user;
+	static int id_user, in_cache;
+	int[] cache1_t = ClientGenerator.cache1;
+	int[] cache2_t = ClientGenerator.cache2;
+	int[] cache3_t = ClientGenerator.cache3;
+	int[] cache4_t = ClientGenerator.cache4;
+	int[] cache5_t = ClientGenerator.cache5;
 
-	public RelationsThread(int i) {
+	public RelationsThread(int i, int j) {
 		id_user=i;
+		in_cache=j;
 		}
 
 	public void run() {
@@ -73,52 +79,18 @@ public class RelationsThread extends Thread{
 					else
 					{
 						break;
-						/*fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
-						if (fromUser != null) {
-							System.out.println("Client - " + fromUser);
-							synchronized (socket){
-								out.println(fromUser);
-							}
-						}*/
 					}
 				}
 				if (Usuarios_totales != 0){
 					new_friends = friendsByDistribution(ClientGenerator.distribucion,Usuarios_totales);
 					if (new_friends == 0){
 						break;
-						/*fromUser ="insertfollowersbycluster," + User_id + "," + new_friends + "," + ClientGenerator.cluster;
-						if (fromUser != null) {
-							System.out.println("Client - " + fromUser);
-							synchronized (socket){
-								out.println(fromUser);
-							}
-						}*/
 					}
 					else{
 						intArray = new int[new_friends];
-						int[] arr = new int[Usuarios_totales];
+						int in_your_cache = distributeFriendships(in_cache,new_friends);
 						
-						for (int i = 0; i < arr.length; i++) {
-					        arr[i] = i+1;
-					    }
-						
-						shuffleArray(arr);
-						boolean esta = false;
-						int pos = 0;
-						int fin = 0;
-						for (int i = 0; i < new_friends; i++) {
-							if (arr[i]==User_id)
-							{
-								esta = true;
-								pos = i;
-							}
-							else
-								intArray[i] = arr[i];
-							fin=i;
-					    }
-						if (esta)
-							intArray[pos]=arr[fin+1];
-						
+						add_friendships(in_cache, intArray,in_your_cache,new_friends,User_id);
 						
 						fromUser ="insertfriendship," + User_id + "," + intArray[friendships_procesadas];
 						friendships_procesadas=friendships_procesadas+1;
@@ -152,6 +124,144 @@ public class RelationsThread extends Thread{
 		}
 	}
 	
+	private void add_friendships(int cache, int[] intArray, int friends_cache, int friends_tot, int user_id) {
+		boolean esta = false;
+		int pos = 0;
+		int fin = 0;
+		shuffleArray(cache1_t);
+		shuffleArray(cache2_t);
+		shuffleArray(cache3_t);
+		shuffleArray(cache4_t);
+		shuffleArray(cache5_t);
+		int[] resto = null;
+		if (cache == 1){
+			for (int i = 0; i < friends_cache; i++) {
+				
+					if (cache1_t[i]==user_id)
+					{
+						esta = true;
+						pos = i;
+					}
+					else
+						intArray[i] = cache1_t[i];
+					fin=i;
+				    }
+			if (esta)
+				intArray[pos]=cache1_t[fin+1];
+			int[] concatenate = combine(cache2_t, cache3_t);
+			int[] concatenate2 = combine(concatenate, cache4_t);
+			resto = combine(concatenate2, cache5_t);
+		}
+		else if (cache == 2){
+			for (int i = 0; i < friends_cache; i++) {
+				
+					if (cache2_t[i]==user_id)
+					{
+						esta = true;
+						pos = i;
+					}
+					else
+						intArray[i] = cache2_t[i];
+					fin=i;
+				    }
+			if (esta)
+				intArray[pos]=cache2_t[fin+1];
+			int[] concatenate = combine(cache1_t, cache3_t);
+			int[] concatenate2 = combine(concatenate, cache4_t);
+			resto = combine(concatenate2, cache5_t);
+		}
+		else if (cache == 3){
+			for (int i = 0; i < friends_cache; i++) {
+				
+					if (cache3_t[i]==user_id)
+					{
+						esta = true;
+						pos = i;
+					}
+					else
+						intArray[i] = cache3_t[i];
+					fin=i;
+				    }
+			if (esta)
+				intArray[pos]=cache3_t[fin+1];
+			int[] concatenate = combine(cache1_t, cache2_t);
+			int[] concatenate2 = combine(concatenate, cache4_t);
+			resto = combine(concatenate2, cache5_t);
+		}
+		else if (cache == 4){
+			for (int i = 0; i < friends_cache; i++) {
+				
+					if (cache4_t[i]==user_id)
+					{
+						esta = true;
+						pos = i;
+					}
+					else
+						intArray[i] = cache4_t[i];
+					fin=i;
+				    }
+			if (esta)
+				intArray[pos]=cache4_t[fin+1];
+			int[] concatenate = combine(cache1_t, cache2_t);
+			int[] concatenate2 = combine(concatenate, cache3_t);
+			resto = combine(concatenate2, cache5_t);
+		}
+		else{
+			for (int i = 0; i < friends_cache; i++) {
+				
+					if (cache5_t[i]==user_id)
+					{
+						esta = true;
+						pos = i;
+					}
+					else
+						intArray[i] = cache5_t[i];
+					fin=i;
+				    }
+			if (esta)
+				intArray[pos]=cache5_t[fin+1];
+			int[] concatenate = combine(cache1_t, cache2_t);
+			int[] concatenate2 = combine(concatenate, cache3_t);
+			resto = combine(concatenate2, cache4_t);
+		}
+		shuffleArray(resto);
+		esta = false;
+		pos = 0;
+		fin = 0;
+		for (int i = friends_cache; i < friends_tot; i++) {
+			
+			if (resto[(i-friends_cache)]==user_id)
+			{
+				esta = true;
+				pos = i-friends_cache;
+			}
+			else
+				intArray[i] = resto[(i-friends_cache)];
+			fin=i;
+		    }
+	if (esta)
+		intArray[pos]=resto[fin+1];
+		
+	
+	}
+	
+	public static int[] combine(int[] a, int[] b){
+        int length = a.length + b.length;
+        int[] result = new int[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+
+	private int distributeFriendships(int cache, int new_friends) {
+		int friends_your_cache = 1;
+		friends_your_cache = (int)(new_friends*60)/100;
+		if (friends_your_cache < ClientGenerator.ClustersArray[(cache-1)])
+			return friends_your_cache;
+		else
+			return ClientGenerator.ClustersArray[(cache-1)]-1;
+	}
+
 	private int friendsByDistribution(int distribucion, int usuarios_totales) {
 		if (distribucion==1){
 			double rand = Math.random();
