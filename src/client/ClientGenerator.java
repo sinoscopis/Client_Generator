@@ -90,7 +90,7 @@ public class ClientGenerator {
 			for(int j=0; j<ClustersArray[i]; j++){
 				RelationsThread user = new RelationsThread(ClientsArray[i][j],(i+1));
 				new Thread(user).start();
-				TimeUnit.MILLISECONDS.sleep(10000);
+				TimeUnit.MILLISECONDS.sleep(1000);
 			}
 		}
 	}
