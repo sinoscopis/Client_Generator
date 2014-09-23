@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.Scanner; 
 public class ClientGenerator {
 	
+	public static int porc_amigos_en_cache = 0;
 	static int usuarios_por_cluster;
 	static int distribucion;
 	static int clusters;
@@ -20,6 +21,7 @@ public class ClientGenerator {
 		    	clusters = Integer.parseInt(args[0]);
 		    	GeneratorThread.Server_host = args[1];
 		    	distribucion = Integer.parseInt(args[2]);
+		    	porc_amigos_en_cache = Integer.parseInt(args[3]);
 		    } catch (Exception e) {
 		        System.err.println("ClientGenerator.jar clusters Server_IP Distribucion");
 		        System.exit(1);
@@ -90,7 +92,7 @@ public class ClientGenerator {
 			for(int j=0; j<ClustersArray[i]; j++){
 				RelationsThread user = new RelationsThread(ClientsArray[i][j],(i+1));
 				new Thread(user).start();
-				TimeUnit.MILLISECONDS.sleep(1000);
+				TimeUnit.MILLISECONDS.sleep(5000);
 			}
 		}
 	}
@@ -100,9 +102,8 @@ public class ClientGenerator {
 	      for(int i=1;i < array.length;i++){  
 	      if(array[i] > maxValue){  
 	      maxValue = array[i];  
-
 	         }  
 	     }  
-	             return maxValue;  
+	     return maxValue;  
 	}
 }
