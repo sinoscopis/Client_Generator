@@ -1,3 +1,7 @@
+/*
+ * Relaciona unos usuarios con otros dependiendo de la distribucion
+ */
+
 package client;
 
 import java.io.*;

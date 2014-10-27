@@ -1,3 +1,7 @@
+/*
+ * Se conecta con el servidor para introducir los nuevos usuarios en el sistema, creacion del dataset.
+ */
+
 package client;
 
 import java.io.*;

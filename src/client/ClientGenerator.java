@@ -1,3 +1,13 @@
+/*
+ * PARA CREAR EL DATASET
+ * 
+ * clusters = Numero de clusters en el sistema
+ * Server_host = Ip del Server 
+ * distribucion = Numero de la distribución para la creación del dataset: 1 lineal, 2 long-tail
+ * porc_amigos_en_cache = Porcentaje del total de amigos que estaran en la misma cache
+ * 
+ */
+
 package client;
 
 import java.io.*;
